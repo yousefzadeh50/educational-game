@@ -27,7 +27,26 @@
     .btn-blue{background:linear-gradient(135deg,#1e88e5,#42a5f5);} .btn-orange{background:linear-gradient(135deg,#fb8c00,#ffa726);}
     .btn-purple{background:linear-gradient(135deg,#7e57c2,#ab47bc);} .btn-red{background:linear-gradient(135deg,#e53935,#ef5350);}
 
-    /* Designer card with glow effect */
+    .stats { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; margin-bottom:20px; }
+    .stats div { background:#fff; border-radius:12px; padding:10px 16px; box-shadow:0 4px 12px rgba(0,0,0,0.08); font-family:'Poppins',sans-serif; font-weight:600; color:#1565c0; min-width:140px; text-align:center; }
+
+    #letters { font-size:44px; font-weight:800; color:#1565c0; background:#e3f2fd; padding:14px 22px; border-radius:18px;
+      box-shadow:0 6px 18px rgba(21,101,192,0.3); display:inline-block; margin-bottom:18px; letter-spacing:4px; }
+
+    .answer-box { display:flex; gap:10px; justify-content:center; align-items:center; margin-bottom:16px; }
+    #input { font-size:18px; padding:10px 14px; border:2px solid #90caf9; border-radius:14px; outline:none; max-width:320px; box-shadow:0 4px 10px rgba(144,202,249,0.3); }
+    .btn-action { font-size:15px; padding:8px 14px; border-radius:12px; font-weight:700; border:none; cursor:pointer; }
+    #submit { background:linear-gradient(135deg,#43a047,#66bb6a); color:#fff; }
+    #home { background:linear-gradient(135deg,#e53935,#ef5350); color:#fff; }
+
+    .lists { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px; }
+    .lists .panel { background:linear-gradient(135deg,#e1bee7,#f3e5f5); border-radius:14px; padding:12px; box-shadow:0 6px 16px rgba(0,0,0,0.08); }
+    .lists h4 { font-family:'Poppins',sans-serif; font-size:15px; margin-bottom:8px; color:#4a148c; }
+    #listGood,#listBad { display:grid; grid-template-columns:1fr; gap:6px; }
+    .item { font-size:13px; font-weight:600; padding:6px; border-radius:8px; background:#ede7f6; color:#311b92; display:flex; justify-content:space-between; align-items:center; }
+    .item button { border:none; background:#7e57c2; color:#fff; border-radius:6px; padding:4px 8px; cursor:pointer; font-size:12px; }
+
+    /* Designer card (افکت‌های قبلی بدون تغییر) */
     .designer { margin-top:26px; display:flex; justify-content:center; }
     .designer-content { background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); border:2px solid rgba(124,77,255,0.35); border-radius:20px; padding:16px 20px;
       display:flex; align-items:center; gap:12px; box-shadow:0 0 20px rgba(124,77,255,0.4),0 0 40px rgba(124,77,255,0.2); animation:glow 3s infinite alternate; }
@@ -36,6 +55,13 @@
     .designer-text { display:flex; flex-direction:column; font-family:'Poppins',sans-serif; color:#0d47a1; }
     .designer-text .label { font-size:12px; font-weight:600; opacity:0.8; }
     .designer-text .name { font-size:15px; font-weight:700; }
+
+    /* Help modal (در شروع مخفی) */
+    .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.35); display:none; align-items:center; justify-content:center; z-index:1000; }
+    .modal { background:#fff; border-radius:16px; max-width:520px; width:90%; padding:18px; box-shadow:0 10px 28px rgba(0,0,0,0.25); text-align:left; }
+    .modal h3 { margin:0 0 8px; font-family:'Poppins',sans-serif; color:#1565c0; }
+    .modal p { margin:6px 0; color:#333; font-size:14px; }
+    .modal .close { margin-top:12px; background:linear-gradient(135deg,#1e88e5,#42a5f5); color:#fff; border:none; border-radius:10px; padding:8px 12px; font-weight:700; cursor:pointer; }
   </style>
 </head>
 <body>
@@ -130,8 +156,37 @@
   <audio id="bgm" preload="auto" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
   <audio id="sndGood" preload="auto" src="https://cdn.freesound.org/previews/398/398284_5121236-lq.mp3"></audio>
   <audio id="sndBad" preload="auto" src="https://www.soundjay.com/button/sounds/button-10.mp3"></audio>
+
+  <!-- Flash card (نمایش لحظه‌ای پاسخ با تصویر و افکت) -->
+  <div id="flashCard" style="
+      position: fixed; left: 50%; top: 18%;
+      transform: translateX(-50%);
+      display: none; z-index: 2000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(124,77,255,0.35);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.25), 0 0 24px rgba(124,77,255,0.35);
+      border-radius: 18px; padding: 14px 16px; text-align: center;
+      animation: flashPop .5s ease;
+    ">
+    <style>
+      @keyframes flashPop { from { transform: translateX(-50%) scale(0.9); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
+      .flash-img { width: 90px; height: 90px; border-radius: 12px; box-shadow: 0 0 16px rgba(124,77,255,0.5); margin-bottom: 8px; }
+      .flash-title { font-family: 'Poppins', sans-serif; font-weight: 700; color: #4a148c; margin-bottom: 4px; }
+      .flash-sub { font-family: 'Rubik', sans-serif; font-weight: 600; color: #1565c0; }
+      .flash-row { display: flex; align-items: center; gap: 8px; justify-content: center; margin-top: 6px; }
+      .flash-btn { border: none; background: linear-gradient(135deg, #7e57c2, #5e35b1); color: #fff; border-radius: 10px; padding: 6px 10px; font-weight: 700; cursor: pointer; }
+    </style>
+    <img id="flashImg" class="flash-img" alt="clipart">
+    <div id="flashTitle" class="flash-title"></div>
+    <div class="flash-row">
+      <div id="flashSub" class="flash-sub"></div>
+      <button id="flashSpeak" class="flash-btn">🔊</button>
+    </div>
+  </div>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // عناصر
     const start   = document.getElementById('start');
     const game    = document.getElementById('game');
     const musicBtn= document.getElementById('musicToggle');
@@ -154,130 +209,222 @@
     const listGood  = document.getElementById('listGood');
     const listBad   = document.getElementById('listBad');
 
-    // Utils
-    const normalize = w => w.toLowerCase().replace(/\s+/g,'');
-    const shuffle = w => w.split('').sort(() => Math.random() - 0.5).join('');
-    const speak = w => { new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(w)}&type=2`).play().catch(()=>{}); };
-    window._speak = function(word){ speak(word); };
+    // کادر لحظه‌ای
+    const flashCard  = document.getElementById('flashCard');
+    const flashImg   = document.getElementById('flashImg');
+    const flashTitle = document.getElementById('flashTitle');
+    const flashSub   = document.getElementById('flashSub');
+    const flashSpeak = document.getElementById('flashSpeak');
 
-    // Vocabulary (20 words per subject)
+    // ابزارها
+    const normalize = w => w.toLowerCase().replace(/\s+/g,'');
+    const shuffle   = w => w.split('').sort(() => Math.random() - 0.5).join('');
+    const speak     = w => { new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(w)}&type=2`).play().catch(()=>{}); };
+    window._speak   = w => speak(w); // برای دکمه‌های لیست
+
+    // واژگان (۲۰ کلمه هر موضوع با slice)
     const subjects = {
-      Personality: { angry:"عصبانی", brave:"شجاع", careless:"بی‌دقت", cruel:"بی‌رحم", funny:"خنده‌دار",
+      Personality: {
+        angry:"عصبانی", brave:"شجاع", careless:"بی‌دقت", cruel:"بی‌رحم", funny:"خنده‌دار",
         neat:"مرتب", nervous:"عصبی", quiet:"ساکت", rude:"بی‌ادب", selfish:"خودخواه",
         lazy:"تنبل", shy:"خجالتی", generous:"سخاوتمند", patient:"صبور", serious:"جدی",
-        friendly:"دوستانه", honest:"صادق", polite:"مودب", clever:"باهوش", calm:"آرام" }
-      // سایر موضوعات مشابه...
+        friendly:"دوستانه", honest:"صادق", polite:"مودب", clever:"باهوش", calm:"آرام"
+      },
+      Travel: {
+        ticket:"بلیط", passport:"گذرنامه", timetable:"برنامه‌زمانی", hotel:"هتل", baggage:"بار",
+        voyage:"سفر دریایی", train:"قطار", toll:"عوارض", form:"فرم", receptionist:"مسئول پذیرش",
+        exchange:"تبدیل ارز", checkin:"پذیرش", reclaim:"تحویل بار", pack:"جمع‌کردن وسایل",
+        weigh:"وزن‌کردن", board:"سوار شدن", express:"سریع‌السیر", itinerary:"مسیر سفر", customs:"گمرک"
+      },
+      Festivals: {
+        ceremony:"مراسم", anthem:"سرود ملی", fireworks:"آتش‌بازی", poems:"اشعار",
+        parade:"رژه", celebrate:"جشن گرفتن", clothes:"لباس‌های ویژه", table:"چیدن میز",
+        bake:"پخت کیک", nature:"طبیعت", lunch:"ناهار", dinner:"شام",
+        tradition:"سنت", holiday:"تعطیلات", commemorate:"گرامیداشت",
+        culture:"فرهنگ", anniversary:"سالگرد"
+      },
+      Services: {
+        account:"حساب", recharge:"شارژ مجدد", putout:"خاموش کردن آتش", emergency:"اورژانس",
+        donate:"اهدای خون", voluntary:"داوطلبانه", charity:"خیریه", information:"اطلاعات",
+        eticket:"بلیط الکترونیک", ambulance:"آمبولانس", ER:"اورژانس", ATM:"خودپرداز",
+        taxi:"تاکسی", clean:"پاکیزه نگه‌داشتن", bring:"بردن", service:"خدمت‌رسانی"
+      },
+      Media: {
+        interview:"مصاحبه", message:"پیامک", email:"ایمیل", blog:"بلاگ", internet:"اینترنت",
+        course:"دوره آنلاین", tv:"تلویزیون", quiz:"مسابقه", movie:"فیلم",
+        channels:"کانال‌ها", update:"به‌روزرسانی", download:"دانلود",
+        antivirus:"ضدویروس", install:"نصب", participate:"شرکت کردن",
+        receive:"دریافت", newsstand:"دکه روزنامه", program:"برنامه",
+        connect:"اتصال", attend:"حضور"
+      },
+      Health: {
+        burned:"سوختگی", hit:"برخورد", broke:"شکستگی", bleeding:"خونریزی",
+        plaster:"چسب‌زخم", knee:"زانو", finger:"نگشت", bruise:"کبودی", blackeye:"سیاهی چشم",
+        crash:"تصادف", scar:"جای زخم", heart:"حمله قلبی", cast:"گچ", wound:"زخم",
+        hurts:"خیلی درد می‌کند", care:"مراقبت", stick:"چسباندن",
+        cut:"بریدن", childcare:"مراقبت از کودک", headache:"سردرد"
+      }
     };
 
-    // State
-    let subjectKey=null, words=[], total=0, score=0, index=0, attempts=0, timerId=null, timeLeft=30;
-    bgm.volume=0.3; // lower default music volume
+    // وضعیت
+    let subjectKey = null;
+    let words = []; let total = 0; let score = 0; let index = 0; let attempts = 0;
+    let timerId = null; let timeLeft = 30;
 
-    function startGame(key){
-      subjectKey=key;
-      const dict=subjects[key];
-      words=Object.keys(dict).slice(0,20);
-      total=words.length; score=0; index=0; attempts=0;
-      scoreEl.textContent='Score: 0';
-      remainEl.textContent=`Remaining Words: ${total}`;
-      triesEl.textContent='Remaining Attempts: 3';
-      lettersEl.textContent=''; feedbackEl.textContent='';
-      listGood.innerHTML=''; listBad.innerHTML='';
-      inputEl.value='';
-      start.style.display='none'; game.style.display='block';
+    // موسیقی کم‌صدا
+    bgm.volume = 0.3;
+
+    // شروع بازی
+    function startGame(key) {
+      subjectKey = key;
+      const dict = subjects[key];
+      words = Object.keys(dict).slice(0, 20); // دقیقاً 20
+      total = words.length;
+      score = 0; index = 0; attempts = 0;
+
+      scoreEl.textContent = 'Score: 0';
+      remainEl.textContent = `Remaining Words: ${total}`;
+      triesEl.textContent = 'Remaining Attempts: 3';
+      lettersEl.textContent = ''; feedbackEl.textContent = '';
+      listGood.innerHTML = ''; listBad.innerHTML = '';
+      inputEl.value = '';
+
+      start.style.display = 'none';
+      game.style.display = 'block';
       showWord();
     }
 
-    function showWord(){
-      const en=words[index];
-      lettersEl.textContent=shuffle(normalize(en));
-      inputEl.value=''; inputEl.focus();
-      attempts=0; triesEl.textContent='Remaining Attempts: 3';
-      feedbackEl.textContent='';
+    // نمایش کلمه بهم‌ریخته
+    function showWord() {
+      const en = words[index];
+      lettersEl.textContent = shuffle(normalize(en));
+      inputEl.value = ''; inputEl.focus();
+      attempts = 0; triesEl.textContent = 'Remaining Attempts: 3';
+      feedbackEl.textContent = '';
       resetTimer();
     }
 
-    function resetTimer(){
+    // تایمر
+    function resetTimer() {
       clearInterval(timerId);
-      timeLeft=30; clockEl.textContent=`⏱ ${timeLeft}`;
-      timerId=setInterval(()=>{
-        timeLeft--; clockEl.textContent=`⏱ ${timeLeft}`;
-        if(timeLeft<=0){ clearInterval(timerId); onTimeout(); }
-      },1000);
+      timeLeft = 30; clockEl.textContent = `⏱ ${String(timeLeft).padStart(2, '0')}`;
+      timerId = setInterval(() => {
+        timeLeft--; clockEl.textContent = `⏱ ${String(timeLeft).padStart(2, '0')}`;
+        if (timeLeft <= 0) { clearInterval(timerId); onTimeout(); }
+      }, 1000);
     }
 
-    function addCard(en,fa,correct){
-      const el=document.createElement('div');
-      el.className='clipart';
-      el.innerHTML=`
-        <img src="images/${en}.png" alt="${en}" class="clip-img">
-        <div class="word-label">${correct? '✔':'✖'} ${en} — ${fa}</div>
-        <button onclick="window._speak('${en}')">🔊</button>`;
-      if(correct) listGood.appendChild(el); else listBad.appendChild(el);
-      speak(en);
+    // نمایش کارت لحظه‌ای با کلیپ‌آرت
+    function showFlash(type, en, fa) {
+      const imgPath = `images/${en}.png`;
+      flashImg.src = imgPath;
+      flashImg.onerror = () => { flashImg.src = 'https://via.placeholder.com/90x90.png?text=🎨'; };
+
+      flashTitle.textContent = type === 'good' ? '✔ Correct!' : type === 'bad' ? '✖ Wrong!' : '⏱ Time’s up!';
+      flashSub.textContent = `${en} — ${fa}`;
+      flashCard.style.display = 'block';
+      flashSpeak.onclick = () => speak(en);
+
+      speak(en); // تلفظ همزمان
+      setTimeout(() => { flashCard.style.display = 'none'; }, 1600);
     }
 
-    function check(){
-      const user=(inputEl.value||'').trim().toLowerCase().replace(/\s+/g,'');
-      const en=words[index]; const fa=subjects[subjectKey][en];
-      const correct=en.toLowerCase().replace(/\s+/g,'');
-      if(user===correct){
-        score+=10; sndGood.currentTime=0; sndGood.play();
-        feedbackEl.textContent=`✔ Correct: ${en} — ${fa}`;
-        addCard(en,fa,true); next();
+    // افزودن به لیست‌ها (بدون تصویر)
+    function addGood(en, fa) {
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.innerHTML = `<span>✔ ${en} — ${fa}</span>
+                      <button aria-label="Pronounce" onclick="window._speak('${en}')">🔊</button>`;
+      listGood.appendChild(el);
+    }
+    function addBad(en, fa) {
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.innerHTML = `<span>✖ ${en} — ${fa}</span>
+                      <button aria-label="Pronounce" onclick="window._speak('${en}')">🔊</button>`;
+      listBad.appendChild(el);
+    }
+
+    // بررسی پاسخ
+    function check() {
+      const user = (inputEl.value || '').trim().toLowerCase().replace(/\s+/g, '');
+      const en = words[index]; const fa = subjects[subjectKey][en];
+      const correct = en.toLowerCase().replace(/\s+/g, '');
+
+      if (user === correct) {
+        score += 10; sndGood.currentTime = 0; sndGood.play();
+        feedbackEl.textContent = `✔ Correct: ${en} — ${fa}`;
+        showFlash('good', en, fa);
+        addGood(en, fa);
+        next();
       } else {
-        attempts++; const left=Math.max(0,3-attempts);
-        triesEl.textContent=`Remaining Attempts: ${left}`;
-        sndBad.currentTime=0; sndBad.play();
-        if(attempts>=3){
-          score-=5; feedbackEl.textContent=`✖ Correct word: ${en} — ${fa}`;
-          addCard(en,fa,false); next();
-        } else { feedbackEl.textContent='❌ Wrong. Try again.'; }
+        attempts++; const left = Math.max(0, 3 - attempts);
+        triesEl.textContent = `Remaining Attempts: ${left}`;
+        sndBad.currentTime = 0; sndBad.play();
+        if (attempts >= 3) {
+          score -= 5;
+          feedbackEl.textContent = `✖ Correct word: ${en} — ${fa}`;
+          showFlash('bad', en, fa);
+          addBad(en, fa);
+          next();
+        } else {
+          feedbackEl.textContent = '❌ Wrong. Try again.';
+        }
       }
-      scoreEl.textContent=`Score: ${score}`;
+      scoreEl.textContent = `Score: ${score}`;
     }
 
-    function onTimeout(){
-      const en=words[index]; const fa=subjects[subjectKey][en];
-      score-=5; scoreEl.textContent=`Score: ${score}`;
-      sndBad.currentTime=0; sndBad.play();
-      feedbackEl.textContent=`⏱ Time’s up! Correct word: ${en} — ${fa}`;
-      addCard(en,fa,false); next();
+    // پایان زمان
+    function onTimeout() {
+      const en = words[index]; const fa = subjects[subjectKey][en];
+      score -= 5; scoreEl.textContent = `Score: ${score}`;
+      sndBad.currentTime = 0; sndBad.play();
+      feedbackEl.textContent = `⏱ Time’s up! Correct word: ${en} — ${fa}`;
+      showFlash('time', en, fa);
+      addBad(en, fa);
+      next();
     }
 
-    function next(){
+    // بعدی یا پایان
+    function next() {
       clearInterval(timerId); index++;
-      remainEl.textContent=`Remaining Words: ${Math.max(0,total-index)}`;
-      if(index<total){ showWord(); } else { finish(); }
+      remainEl.textContent = `Remaining Words: ${Math.max(0, total - index)}`;
+      if (index < total) { showWord(); } else { finish(); }
+    }
+    function finish() {
+      const pass = (total * 10) / 2;
+      if (score >= pass) { feedbackEl.textContent = '🎉 Great job! Game finished.'; sndGood.currentTime = 0; sndGood.play(); }
+      else { feedbackEl.textContent = 'Game finished. Try again!'; }
     }
 
-    function finish(){
-      const pass=(total*10)/2;
-      if(score>=pass){ feedbackEl.textContent='🎉 Great job! Game finished.'; sndGood.play(); }
-      else { feedbackEl.textContent='Game finished. Try again!'; }
-    }
-
-    document.querySelectorAll('.subject-buttons button').forEach(b=>{
-      b.addEventListener('click',()=>startGame(b.dataset.subject));
+    // رویدادها
+    document.querySelectorAll('.subject-buttons button').forEach(b => {
+      b.addEventListener('click', () => startGame(b.dataset.subject));
     });
-    submitEl.addEventListener('click',check);
-    inputEl.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
-    homeEl.addEventListener('click',()=>{
-      clearInterval(timerId); game.style.display='none'; start.style.display='block';
-      inputEl.value=''; feedbackEl.textContent='';
+    submitEl.addEventListener('click', check);
+    inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') check(); });
+    homeEl.addEventListener('click', () => {
+      clearInterval(timerId);
+      game.style.display = 'none';
+      start.style.display = 'block';
+      inputEl.value = ''; feedbackEl.textContent = '';
+      flashCard.style.display = 'none';
     });
 
-    let musicOn=false;
-    musicBtn.addEventListener('click',async()=>{
-      try{
-        if(!musicOn){ await bgm.play(); musicOn=true; musicBtn.textContent='🔇 Stop'; }
-        else { bgm.pause(); musicOn=false; musicBtn.textContent='🎶 Music'; }
-      }catch(e){}
+    // موسیقی
+    let musicOn = false;
+    musicBtn.addEventListener('click', async () => {
+      try {
+        if (!musicOn) { await bgm.play(); musicOn = true; musicBtn.textContent = '🔇 Stop'; }
+        else { bgm.pause(); musicOn = false; musicBtn.textContent = '🎶 Music'; }
+      } catch (e) { /* autoplay ممکن است مسدود شود */ }
     });
 
-    helpBtn.addEventListener('click',()=>{ helpModal.style.display='flex'; });
-    helpClose.addEventListener('click',()=>{ helpModal.style.display='none'; });
-    helpModal.addEventListener('click',e=>{ if(e.target===helpModal) helpModal.style.display='none'; });
+    // مودال راهنما — فقط با کلیک باز/بسته شود
+    helpBtn.addEventListener('click', () => { helpModal.style.display = 'flex'; });
+    helpClose.addEventListener('click', () => { helpModal.style.display = 'none'; });
+    helpModal.addEventListener('click', (e) => { if (e.target === helpModal) helpModal.style.display = 'none'; });
+    helpModal.style.display = 'none'; // اطمینان از مخفی بودن در ابتدا
   });
   </script>
 </body>
