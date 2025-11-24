@@ -2,134 +2,90 @@
 <html lang="fa">
 <head>
 <meta charset="UTF-8">
-<title>بازی واژگان</title>
+<title>English for Schools - Prospect 3</title>
 <style>
-  body { font-family: Tahoma, sans-serif; text-align: center; }
-  #game { margin-top: 30px; }
-  #word { font-size: 28px; font-weight: bold; }
-  #meaning { font-size: 20px; color: #555; }
-  #imageWrap { margin: 15px auto; }
-  #imageWrap img { max-width: 200px; max-height: 200px; }
-  #answers button { margin: 5px; padding: 10px 20px; font-size: 16px; }
-  #feedback { margin-top: 15px; font-weight: bold; }
+  body { font-family: Tahoma, sans-serif; margin:0; background:#f0f4ff; }
+  header {
+    text-align:center; padding:20px;
+    background:linear-gradient(135deg,#6c5ce7,#00d2ff);
+    color:white; font-size:32px; font-weight:bold;
+    text-shadow:0 0 15px rgba(0,0,0,.5);
+  }
+  header h2 { margin:5px 0; font-size:24px; }
+  .toolbar { display:flex; justify-content:space-between; padding:10px; background:#222; color:white; }
+  .toolbar button { background:#444; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
+  .card { margin:20px auto; max-width:700px; padding:20px; background:white; border-radius:20px; box-shadow:0 0 25px rgba(0,0,0,.25); text-align:center; }
+  .phrase { font-size:28px; font-weight:bold; color:#2c3e50; margin-bottom:10px; }
+  .meaning { font-size:22px; color:#e74c3c; margin:10px 0; }
+  .examples { margin-top:15px; text-align:left; }
+  .examples p { font-size:18px; margin:10px 0; background:#f9f9f9; padding:8px; border-radius:8px; }
+  .examples span { display:block; font-size:16px; color:#555; margin-top:4px; }
+  .designer { margin-top:30px; padding:15px; background:#eee; border-radius:16px; display:flex; align-items:center; justify-content:center; gap:15px; }
+  .designer img { width:90px; height:90px; border-radius:50%; box-shadow:0 0 12px #6c5ce7; }
+  .designer div { text-align:left; }
 </style>
 </head>
 <body>
 
-<h1>بازی آموزشی واژگان</h1>
+<header>
+  English for Schools <br>
+  <h2>Prospect 3</h2>
+</header>
 
-<div id="game">
-  <h2 id="word"></h2>
-  <p id="meaning"></p>
+<div class="toolbar">
+  <button onclick="toggleMusic()">🎵 موسیقی زمینه</button>
+  <button onclick="showHelp()">❓ راهنما</button>
+</div>
+
+<div class="card">
+  <div class="phrase" id="phrase">buy a ticket</div>
+  <div class="meaning">خریدن بلیط</div>
   
-  <!-- نمایش تصویر -->
-  <div id="imageWrap">
-    <img id="image" src="" alt="word image">
+  <div class="examples">
+    <p>
+      1. I want to buy a ticket for the train. 
+      <button onclick="speak('I want to buy a ticket for the train')">🔊</button>
+      <span>می‌خواهم یک بلیط برای قطار بخرم.</span>
+    </p>
+    <p>
+      2. She bought a ticket to Tehran. 
+      <button onclick="speak('She bought a ticket to Tehran')">🔊</button>
+      <span>او یک بلیط به تهران خرید.</span>
+    </p>
+    <p>
+      3. We need to buy tickets for the concert. 
+      <button onclick="speak('We need to buy tickets for the concert')">🔊</button>
+      <span>ما باید برای کنسرت بلیط بخریم.</span>
+    </p>
   </div>
-  
-  <div id="answers"></div>
-  <p id="feedback"></p>
+</div>
+
+<div class="designer">
+  <img src="designer-photo.jpg" alt="Designer">
+  <div>
+    <strong>طراح: عبدالرّسول</strong><br>
+    <span>UI زیبا، فیدبک جذاب، موسیقی و تصاویر کارتونی</span>
+  </div>
 </div>
 
 <script>
-// لیست کلمات Personality
-const words = [
-  {en:"angry", fa:"عصبانی"},
-  {en:"brave", fa:"شجاع"},
-  {en:"careless", fa:"بی‌دقت"},
-  {en:"cruel", fa:"بی‌رحم"},
-  {en:"funny", fa:"بامزه"},
-  {en:"neat", fa:"مرتب"},
-  {en:"nervous", fa:"دل‌نگران"},
-  {en:"quiet", fa:"ساکت"},
-  {en:"rude", fa:"بی‌ادب"},
-  {en:"selfish", fa:"خودخواه"},
-  {en:"lazy", fa:"تنبل"},
-  {en:"shy", fa:"خجالتی"},
-  {en:"generous", fa:"سخاوتمند"},
-  {en:"patient", fa:"صبور"},
-  {en:"serious", fa:"جدی"},
-  {en:"friendly", fa:"دوستانه"},
-  {en:"honest", fa:"صادق"},
-  {en:"polite", fa:"مودب"},
-  {en:"clever", fa:"باهوش"},
-  {en:"calm", fa:"آرام"}
-];
-
-// لینک تصاویر اینترنتی
-const imageMap = {
-  angry: "https://png.pngtree.com/png-vector/20231128/ourmid/pngtree-angry-cartoon-character-isolated-on-white-background-png-image_10596272.png",
-  brave: "https://png.pngtree.com/png-clipart/20230513/ourmid/pngtree-cute-brave-knight-boy-cartoon-vector-png-image_7079688.png",
-  careless: "https://png.pngtree.com/png-vector/20231127/ourmid/pngtree-careless-businessman-falling-into-hole-vector-png-image_10608256.png",
-  cruel: "https://png.pngtree.com/png-vector/20231128/ourmid/pngtree-evil-devil-cartoon-character-vector-png-image_10608894.png",
-  funny: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-funny-smiling-cartoon-character-png-image_10533304.png",
-  neat: "https://png.pngtree.com/png-clipart/20231009/ourmid/pngtree-tidy-boy-organizing-books-cartoon-png-image_9924339.png",
-  nervous: "https://png.pngtree.com/png-vector/20231128/ourmid/pngtree-nervous-cartoon-boy-biting-nails-vector-png-image_10596282.png",
-  quiet: "https://png.pngtree.com/png-clipart/20231126/ourmid/pngtree-quiet-shy-girl-cartoon-vector-png-image_10596079.png",
-  rude: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-rude-impolite-boy-sticking-tongue-png-image_10533366.png",
-  selfish: "https://png.pngtree.com/png-vector/20231128/ourmid/pngtree-selfish-boy-hugging-gifts-cartoon-vector-png-image_10596279.png",
-  lazy: "https://png.pngtree.com/png-vector/20231127/ourmid/pngtree-lazy-boy-sleeping-on-couch-cartoon-png-image_10608246.png",
-  shy: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-shy-girl-covering-face-cartoon-png-image_10533302.png",
-  generous: "https://png.pngtree.com/png-vector/20231127/ourmid/pngtree-generous-girl-giving-gift-cartoon-vector-png-image_10608242.png",
-  patient: "https://png.pngtree.com/png-vector/20231114/ourmid/pngtree-patient-boy-waiting-with-smile-cartoon-png-image_10533357.png",
-  serious: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-serious-man-with-arms-crossed-cartoon-png-image_10533355.png",
-  friendly: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-friendly-boy-waving-hand-cartoon-png-image_10533312.png",
-  honest: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-honest-girl-speaking-the-truth-cartoon-png-image_10533328.png",
-  polite: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-polite-boy-bowing-cartoon-png-image_10533314.png",
-  clever: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-smart-clever-kid-with-idea-bulb-cartoon-png-image_10533337.png",
-  calm: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-calm-meditation-boy-cartoon-png-image_10533322.png"
-};
-
-let currentIndex = 0;
-
-// نمایش سوال
-function showQuestion(){
-  const item = words[currentIndex];
-  document.getElementById("word").textContent = item.en;
-  document.getElementById("meaning").textContent = item.fa;
-  
-  // تصویر
-  const img = document.getElementById("image");
-  img.src = imageMap[item.en] || "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
-  
-  // تلفظ انگلیسی همزمان
-  const utter = new SpeechSynthesisUtterance(item.en);
+function speak(text){
+  const utter = new SpeechSynthesisUtterance(text);
   utter.lang = "en-US";
   speechSynthesis.speak(utter);
-  
-  // گزینه‌ها
-  const answersDiv = document.getElementById("answers");
-  answersDiv.innerHTML = "";
-  const choices = [item.en];
-  while(choices.length < 4){
-    const rand = words[Math.floor(Math.random()*words.length)].en;
-    if(!choices.includes(rand)) choices.push(rand);
-  }
-  choices.sort(()=>Math.random()-0.5);
-  choices.forEach(choice=>{
-    const btn = document.createElement("button");
-    btn.textContent = choice;
-    btn.onclick = ()=>checkAnswer(choice, item.en);
-    answersDiv.appendChild(btn);
-  });
 }
-
-function checkAnswer(choice, correct){
-  const feedback = document.getElementById("feedback");
-  if(choice===correct){
-    feedback.textContent = "آفرین! درست گفتی ✅";
-    // تلفظ فارسی
-    const utter = new SpeechSynthesisUtterance("آفرین! درست گفتی");
-    utter.lang = "fa-IR";
-    speechSynthesis.speak(utter);
-    setTimeout(()=>{currentIndex=(currentIndex+1)%words.length;showQuestion();},1500);
-  } else {
-    feedback.textContent = "اشتباه است ❌ دوباره امتحان کن";
-  }
+function toggleMusic(){
+  alert("موسیقی زمینه با صدای پایین پخش/توقف می‌شود (اینجا می‌توانی فایل صوتی اضافه کنی).");
 }
-
-// شروع بازی
-showQuestion();
+function showHelp(){
+  alert("راهنما: هر عبارت با تلفظ و مثال‌های ساده نمایش داده می‌شود. روی 🔊 کلیک کن تا جمله تلفظ شود.");
+}
+// تلفظ همزمان عبارت اصلی
+window.onload = ()=>{
+  const utter = new SpeechSynthesisUtterance(document.getElementById("phrase").textContent);
+  utter.lang = "en-US";
+  speechSynthesis.speak(utter);
+};
 </script>
 
 </body>
