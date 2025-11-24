@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Word Puzzle Game for Prospect 3</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Orbitron:wght@500;700&family=Poppins:wght@400;600;700&family=Rubik:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; font-family:'Rubik',sans-serif; background:radial-gradient(circle at top left,#e3f2fd,#bbdefb,#90caf9); color:#0d47a1; }
+    .container { max-width:1000px; margin:0 auto; padding:24px; text-align:center; }
+
+    .title-main { font-family:'Bungee Shade','Orbitron',sans-serif; font-size:46px; margin:0;
+      background:linear-gradient(90deg,#ff4081,#7c4dff,#448aff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .title-sub { font-family:'Orbitron',sans-serif; font-size:30px; margin:8px 0 30px; color:#1565c0; }
+
+    .top-bar { position:fixed; top:12px; left:12px; right:12px; display:flex; justify-content:space-between; z-index:999; }
+    .btn { border:none; cursor:pointer; border-radius:10px; padding:8px 14px; color:#fff; font-weight:700; font-size:14px; font-family:'Poppins',sans-serif; }
+    #musicToggle { background:linear-gradient(135deg,#ff9800,#f57c00); }
+    #helpToggle { background:linear-gradient(135deg,#42a5f5,#1e88e5); }
+
+    .subject-area { display:flex; flex-direction:column; align-items:center; gap:16px; }
+    .subject-title { font-family:'Poppins',sans-serif; font-size:26px; font-weight:700; color:#ef6c00; text-shadow:0 2px 6px rgba(239,108,0,0.25); }
+    .subject-buttons { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
+    .subject-buttons button { border:none; cursor:pointer; border-radius:14px; padding:12px 18px; color:#fff; font-weight:700; font-size:16px; font-family:'Poppins',sans-serif; transition:transform .18s ease, box-shadow .18s ease; }
+    .subject-buttons button:hover { transform:translateY(-1px) scale(1.04); box-shadow:0 8px 16px rgba(0,0,0,0.22); }
+    .btn-green{background:linear-gradient(135deg,#43a047,#66bb6a);} .btn-teal{background:linear-gradient(135deg,#00897b,#26a69a);}
+    .btn-blue{background:linear-gradient(135deg,#1e88e5,#42a5f5);} .btn-orange{background:linear-gradient(135deg,#fb8c00,#ffa726);}
+    .btn-purple{background:linear-gradient(135deg,#7e57c2,#ab47bc);} .btn-red{background:linear-gradient(135deg,#e53935,#ef5350);}
+
+    /* Designer card with glow effect */
+    .designer { margin-top:26px; display:flex; justify-content:center; }
+    .designer-content { background:rgba(255,255,255,0.85); backdrop-filter:blur(12px); border:2px solid rgba(124,77,255,0.35); border-radius:20px; padding:16px 20px;
+      display:flex; align-items:center; gap:12px; box-shadow:0 0 20px rgba(124,77,255,0.4),0 0 40px rgba(124,77,255,0.2); animation:glow 3s infinite alternate; }
+    @keyframes glow { from{box-shadow:0 0 20px rgba(124,77,255,0.4);} to{box-shadow:0 0 40px rgba(124,77,255,0.6);} }
+    .profile { width:70px; height:70px; border-radius:50%; border:3px solid #1565c0; }
+    .designer-text { display:flex; flex-direction:column; font-family:'Poppins',sans-serif; color:#0d47a1; }
+    .designer-text .label { font-size:12px; font-weight:600; opacity:0.8; }
+    .designer-text .name { font-size:15px; font-weight:700; }
+  </style>
+</head>
+<body>
+
+  <!-- Top buttons -->
+  <div class="top-bar">
+    <button id="musicToggle" class="btn">🎶 Music</button>
+    <button id="helpToggle" class="btn">❔ Help</button>
+  </div>
+
+  <!-- Start page -->
+  <div class="container" id="start">
+    <h1 class="title-main">WORD PUZZLE GAME</h1>
+    <h2 class="title-sub">for Prospect 3</h2>
+
+    <div class="subject-area">
+      <div class="subject-title">Choose a subject</div>
+      <div class="subject-buttons">
+        <button class="btn-green"  data-subject="Personality">Personality</button>
+        <button class="btn-teal"   data-subject="Travel">Travel</button>
+        <button class="btn-blue"   data-subject="Festivals">Festivals</button>
+        <button class="btn-orange" data-subject="Services">Services</button>
+        <button class="btn-purple" data-subject="Media">Media</button>
+        <button class="btn-red"    data-subject="Health">Health</button>
+      </div>
+    </div>
+
+    <div class="designer">
+      <div class="designer-content">
+        <img class="profile" src="https://s34.picofile.com/file/8488183492/2.png" alt="Designer">
+        <div class="designer-text">
+          <span class="label">Designer</span>
+          <span class="name">A.R. Yousefzadeh</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Game page -->
+  <div class="container" id="game" style="display:none;">
+    <div class="stats">
+      <div id="score">Score: 0</div>
+      <div id="remain">Remaining Words: 0</div>
+      <div id="tries">Remaining Attempts: 3</div>
+      <div id="clock">⏱ 30</div>
+    </div>
+
+    <div id="letters"></div>
+    <div id="feedback"></div>
+
+    <div class="answer-box">
+      <input id="input" type="text" placeholder="Type the English word">
+      <button id="submit" class="btn-action">Submit</button>
+      <button id="home" class="btn-action">🏠 Home</button>
+    </div>
+
+    <div class="lists">
+      <div class="panel">
+        <h4>Correct answers</h4>
+        <div id="listGood"></div>
+      </div>
+      <div class="panel">
+        <h4>Wrong answers</h4>
+        <div id="listBad"></div>
+      </div>
+    </div>
+
+    <div class="designer">
+      <div class="designer-content">
+        <img class="profile" src="https://s34.picofile.com/file/8488183492/2.png" alt="Designer">
+        <div class="designer-text">
+          <span class="label">Designer</span>
+          <span class="name">A.R. Yousefzadeh</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help modal bilingual -->
+  <div class="modal-backdrop" id="helpModal">
+    <div class="modal">
+      <h3>Game Help / راهنمای بازی</h3>
+      <p>• A scrambled English word is shown. / یک کلمه انگلیسی بهم‌ریخته نمایش داده می‌شود.</p>
+      <p>• Type the correct word and press Submit. / کلمه صحیح را تایپ کنید و دکمه Submit را بزنید.</p>
+      <p>• Each correct answer = +10 points. / هر پاسخ درست ۱۰ امتیاز دارد.</p>
+      <p>• Each wrong answer = -5 points. / هر پاسخ غلط ۵ امتیاز کم می‌کند.</p>
+      <p>• 3 attempts and 30 seconds per word. / برای هر کلمه ۳ تلاش و ۳۰ ثانیه زمان دارید.</p>
+      <button class="close" id="helpClose">OK / باشه</button>
+    </div>
+  </div>
+
+  <!-- Audio -->
+  <audio id="bgm" preload="auto" loop src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+  <audio id="sndGood" preload="auto" src="https://cdn.freesound.org/previews/398/398284_5121236-lq.mp3"></audio>
+  <audio id="sndBad" preload="auto" src="https://www.soundjay.com/button/sounds/button-10.mp3"></audio>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const start   = document.getElementById('start');
+    const game    = document.getElementById('game');
+    const musicBtn= document.getElementById('musicToggle');
+    const helpBtn = document.getElementById('helpToggle');
+    const helpModal = document.getElementById('helpModal');
+    const helpClose = document.getElementById('helpClose');
+    const bgm      = document.getElementById('bgm');
+    const sndGood  = document.getElementById('sndGood');
+    const sndBad   = document.getElementById('sndBad');
+
+    const scoreEl   = document.getElementById('score');
+    const remainEl  = document.getElementById('remain');
+    const triesEl   = document.getElementById('tries');
+    const clockEl   = document.getElementById('clock');
+    const lettersEl = document.getElementById('letters');
+    const feedbackEl= document.getElementById('feedback');
+    const inputEl   = document.getElementById('input');
+    const submitEl  = document.getElementById('submit');
+    const homeEl    = document.getElementById('home');
+    const listGood  = document.getElementById('listGood');
+    const listBad   = document.getElementById('listBad');
+
+    // Utils
+    const normalize = w => w.toLowerCase().replace(/\s+/g,'');
+    const shuffle = w => w.split('').sort(() => Math.random() - 0.5).join('');
+    const speak = w => { new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(w)}&type=2`).play().catch(()=>{}); };
+    window._speak = function(word){ speak(word); };
+
+    // Vocabulary (20 words per subject)
+    const subjects = {
+      Personality: { angry:"عصبانی", brave:"شجاع", careless:"بی‌دقت", cruel:"بی‌رحم", funny:"خنده‌دار",
+        neat:"مرتب", nervous:"عصبی", quiet:"ساکت", rude:"بی‌ادب", selfish:"خودخواه",
+        lazy:"تنبل", shy:"خجالتی", generous:"سخاوتمند", patient:"صبور", serious:"جدی",
+        friendly:"دوستانه", honest:"صادق", polite:"مودب", clever:"باهوش", calm:"آرام" }
+      // سایر موضوعات مشابه...
+    };
+
+    // State
+    let subjectKey=null, words=[], total=0, score=0, index=0, attempts=0, timerId=null, timeLeft=30;
+    bgm.volume=0.3; // lower default music volume
+
+    function startGame(key){
+      subjectKey=key;
+      const dict=subjects[key];
+      words=Object.keys(dict).slice(0,20);
+      total=words.length; score=0; index=0; attempts=0;
+      scoreEl.textContent='Score: 0';
+      remainEl.textContent=`Remaining Words: ${total}`;
+      triesEl.textContent='Remaining Attempts: 3';
+      lettersEl.textContent=''; feedbackEl.textContent='';
+      listGood.innerHTML=''; listBad.innerHTML='';
+      inputEl.value='';
+      start.style.display='none'; game.style.display='block';
+      showWord();
+    }
+
+    function showWord(){
+      const en=words[index];
+      lettersEl.textContent=shuffle(normalize(en));
+      inputEl.value=''; inputEl.focus();
+      attempts=0; triesEl.textContent='Remaining Attempts: 3';
+      feedbackEl.textContent='';
+      resetTimer();
+    }
+
+    function resetTimer(){
+      clearInterval(timerId);
+      timeLeft=30; clockEl.textContent=`⏱ ${timeLeft}`;
+      timerId=setInterval(()=>{
+        timeLeft--; clockEl.textContent=`⏱ ${timeLeft}`;
+        if(timeLeft<=0){ clearInterval(timerId); onTimeout(); }
+      },1000);
+    }
+
+    function addCard(en,fa,correct){
+      const el=document.createElement('div');
+      el.className='clipart';
+      el.innerHTML=`
+        <img src="images/${en}.png" alt="${en}" class="clip-img">
+        <div class="word-label">${correct? '✔':'✖'} ${en} — ${fa}</div>
+        <button onclick="window._speak('${en}')">🔊</button>`;
+      if(correct) listGood.appendChild(el); else listBad.appendChild(el);
+      speak(en);
+    }
+
+    function check(){
+      const user=(inputEl.value||'').trim().toLowerCase().replace(/\s+/g,'');
+      const en=words[index]; const fa=subjects[subjectKey][en];
+      const correct=en.toLowerCase().replace(/\s+/g,'');
+      if(user===correct){
+        score+=10; sndGood.currentTime=0; sndGood.play();
+        feedbackEl.textContent=`✔ Correct: ${en} — ${fa}`;
+        addCard(en,fa,true); next();
+      } else {
+        attempts++; const left=Math.max(0,3-attempts);
+        triesEl.textContent=`Remaining Attempts: ${left}`;
+        sndBad.currentTime=0; sndBad.play();
+        if(attempts>=3){
+          score-=5; feedbackEl.textContent=`✖ Correct word: ${en} — ${fa}`;
+          addCard(en,fa,false); next();
+        } else { feedbackEl.textContent='❌ Wrong. Try again.'; }
+      }
+      scoreEl.textContent=`Score: ${score}`;
+    }
+
+    function onTimeout(){
+      const en=words[index]; const fa=subjects[subjectKey][en];
+      score-=5; scoreEl.textContent=`Score: ${score}`;
+      sndBad.currentTime=0; sndBad.play();
+      feedbackEl.textContent=`⏱ Time’s up! Correct word: ${en} — ${fa}`;
+      addCard(en,fa,false); next();
+    }
+
+    function next(){
+      clearInterval(timerId); index++;
+      remainEl.textContent=`Remaining Words: ${Math.max(0,total-index)}`;
+      if(index<total){ showWord(); } else { finish(); }
+    }
+
+    function finish(){
+      const pass=(total*10)/2;
+      if(score>=pass){ feedbackEl.textContent='🎉 Great job! Game finished.'; sndGood.play(); }
+      else { feedbackEl.textContent='Game finished. Try again!'; }
+    }
+
+    document.querySelectorAll('.subject-buttons button').forEach(b=>{
+      b.addEventListener('click',()=>startGame(b.dataset.subject));
+    });
+    submitEl.addEventListener('click',check);
+    inputEl.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); });
+    homeEl.addEventListener('click',()=>{
+      clearInterval(timerId); game.style.display='none'; start.style.display='block';
+      inputEl.value=''; feedbackEl.textContent='';
+    });
+
+    let musicOn=false;
+    musicBtn.addEventListener('click',async()=>{
+      try{
+        if(!musicOn){ await bgm.play(); musicOn=true; musicBtn.textContent='🔇 Stop'; }
+        else { bgm.pause(); musicOn=false; musicBtn.textContent='🎶 Music'; }
+      }catch(e){}
+    });
+
+    helpBtn.addEventListener('click',()=>{ helpModal.style.display='flex'; });
+    helpClose.addEventListener('click',()=>{ helpModal.style.display='none'; });
+    helpModal.addEventListener('click',e=>{ if(e.target===helpModal) helpModal.style.display='none'; });
+  });
+  </script>
+</body>
+</html>
