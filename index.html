@@ -1,231 +1,46 @@
 <!DOCTYPE html>
 <html lang="fa">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Educational Game – Vocabulary & Images</title>
+<meta charset="UTF-8">
+<title>بازی واژگان</title>
 <style>
-  :root{
-    --bg:#0f1226;
-    --card:#1b1f3b;
-    --accent:#6c5ce7;
-    --accent-2:#00d2ff;
-    --good:#00c853;
-    --bad:#ff5252;
-    --text:#f3f5ff;
-    --muted:#c7c9e6;
-    --glow:0 0 20px rgba(108,92,231,.6), 0 0 40px rgba(0,210,255,.35);
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;background:radial-gradient(1200px circle at 10% 0%,#182044 0%,#0f1226 45%,#0b0e1e 100%);
-    color:var(--text);font-family:IRANSans,system-ui,-apple-system,Segoe UI,Roboto,"SF Pro Text",sans-serif;
-  }
-  /* Start screen */
-  .start{
-    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;
-  }
-  .start-card{
-    width:min(960px,95vw);background:linear-gradient(180deg,rgba(27,31,59,.9),rgba(17,20,38,.9));
-    border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:28px 28px 20px;box-shadow:var(--glow);
-    backdrop-filter: blur(10px);
-  }
-  .title{
-    font-size:28px;font-weight:800;margin:0 0 8px;text-align:center;letter-spacing:.3px;
-  }
-  .subtitle{
-    text-align:center;color:var(--muted);margin:0 0 18px;font-size:15px;
-  }
-  .designer{
-    display:flex;gap:12px;align-items:center;justify-content:center;margin:14px 0 22px;
-  }
-  .designer .avatar{
-    width:64px;height:64px;border-radius:16px;box-shadow:var(--glow);
-    background:linear-gradient(135deg,#6c5ce7,#00d2ff);display:flex;align-items:center;justify-content:center;font-weight:700;
-    color:#fff;
-  }
-  .designer .name{
-    font-weight:700;font-size:16px
-  }
-  .designer .role{color:var(--muted);font-size:13px}
-  .section{
-    background:#12152c;border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;margin:12px 0;
-  }
-  .section h3{margin:0 0 10px;font-size:16px}
-  .grid{
-    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;
-  }
-  .btn{
-    width:100%;padding:12px 14px;border:none;border-radius:14px;font-weight:700;cursor:pointer;
-    background:linear-gradient(135deg,#23284e,#1b1f3b);color:var(--text);outline:none;transition:.2s transform,.2s box-shadow;
-    border:1px solid rgba(255,255,255,.08);
-  }
-  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
-  .accent{background:linear-gradient(135deg,#6c5ce7,#00d2ff)}
-  .accent-2{background:linear-gradient(135deg,#00d2ff,#4facfe)}
-  .good{background:linear-gradient(135deg,#00c853,#27ae60)}
-  .bad{background:linear-gradient(135deg,#ff5252,#ff1744)}
-  .outline{background:transparent;border:1px dashed rgba(255,255,255,.25)}
-  .bar{
-    display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px
-  }
-  .bar .chip{
-    padding:8px 12px;border-radius:999px;background:#0f1330;border:1px solid rgba(255,255,255,.08);
-    font-size:12px;color:var(--muted)
-  }
-  .controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:6px}
-  .hint{color:var(--muted);font-size:12px;text-align:center;margin-top:6px}
-
-  /* Game layout */
-  .game{display:none;min-height:100vh;padding:20px}
-  .top{
-    display:flex;justify-content:space-between;align-items:center;margin-bottom:16px
-  }
-  .logo{font-weight:800;letter-spacing:.5px}
-  .actions{display:flex;gap:8px}
-  .card{
-    background:linear-gradient(180deg,rgba(27,31,59,.9),rgba(17,20,38,.9));
-    border:1px solid rgba(255,255,255,.08);border-radius:22px;padding:16px;margin-bottom:16px
-  }
-  .question{
-    display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start
-  }
-  .q-left{padding:8px}
-  .q-word{font-size:24px;font-weight:800;margin:0 0 10px}
-  .q-meaning{color:var(--muted);margin:0 0 12px}
-  .image-wrap{
-    background:#0d1130;border:1px solid rgba(255,255,255,.06);border-radius:16px;overflow:hidden;min-height:220px;
-    display:flex;align-items:center;justify-content:center;position:relative
-  }
-  .image-wrap img{max-width:100%;max-height:280px;object-fit:contain;transition:transform .6s ease}
-  .image-wrap.correct img{animation:pulse 700ms ease}
-  @keyframes pulse{
-    0%{transform:scale(1)}
-    50%{transform:scale(1.06)}
-    100%{transform:scale(1)}
-  }
-
-  .answers{
-    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px
-  }
-  .answers .btn{font-size:15px;padding:12px}
-  .feedback{
-    margin-top:12px;display:flex;align-items:center;gap:10px
-  }
-  .tag{padding:8px 10px;border-radius:999px;font-weight:700;font-size:12px}
-  .tag.good{background:#003b18;color:#6cff9c;border:1px solid #0e7d3f}
-  .tag.bad{background:#3b0000;color:#ff9ca3;border:1px solid #7d0e0e}
-  .confetti{pointer-events:none;position:fixed;inset:0}
-  /* Modal */
-  .modal{
-    position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:20px
-  }
-  .modal .box{
-    width:min(760px,96vw);background:#141735;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px
-  }
-  .modal h3{margin:0 0 8px}
-  .modal p{color:var(--muted);margin:6px 0}
-  .close-x{float:left;cursor:pointer;color:#fff;background:#2b305b;border-radius:10px;padding:6px 10px}
-  /* Audio button */
-  .icon{
-    padding:10px 12px;border-radius:12px;background:#202550;border:1px solid rgba(255,255,255,.1);cursor:pointer
-  }
-  .icon.active{background:linear-gradient(135deg,#6c5ce7,#00d2ff)}
+  body { font-family: Tahoma, sans-serif; text-align: center; }
+  #game { margin-top: 30px; }
+  #word { font-size: 28px; font-weight: bold; }
+  #meaning { font-size: 20px; color: #555; }
+  #imageWrap { margin: 15px auto; }
+  #imageWrap img { max-width: 200px; max-height: 200px; }
+  #answers button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+  #feedback { margin-top: 15px; font-weight: bold; }
 </style>
 </head>
 <body>
 
-<section class="start" id="start">
-  <div class="start-card">
-    <h1 class="title">بازی واژگان با تصویر و تلفظ</h1>
-    <p class="subtitle">انتخاب موضوع، موسیقی، فیدبک جذاب، و نمایش تصویر مستقیم از اینترنت – بدون آپلود فایل.</p>
+<h1>بازی آموزشی واژگان</h1>
 
-    <div class="designer">
-      <div class="avatar">AR</div>
-      <div>
-        <div class="name">طراح: عبدالرّسول</div>
-        <div class="role">UI زیبا، کنترل‌های بزرگ، فیدبک انگیزشی، و راهنمای دو‌زبانه</div>
-      </div>
-    </div>
-
-    <div class="section">
-      <h3>موضوع را انتخاب کن</h3>
-      <div class="grid">
-        <button class="btn accent" data-topic="personality">Personality</button>
-        <button class="btn accent-2 outline" disabled title="به‌زودی">Travel</button>
-        <button class="btn accent-2 outline" disabled title="به‌زودی">Media</button>
-        <button class="btn accent-2 outline" disabled title="به‌زودی">Health</button>
-      </div>
-      <div class="bar">
-        <span class="chip">موسیقی پس‌زمینه</span>
-        <button class="btn" id="musicBtn">پخش/توقف موسیقی</button>
-        <button class="btn" id="helpBtn">راهنما / Help</button>
-      </div>
-      <p class="hint">پس از انتخاب موضوع، بازی شروع می‌شود. تصویر هر واژه از لینک اینترنتی لود می‌شود.</p>
-    </div>
-
-    <div class="section">
-      <h3>تنظیمات نمایش</h3>
-      <div class="controls">
-        <button class="btn good" id="showImagesToggle">نمایش تصویر: روشن</button>
-        <button class="btn" id="voiceToggle">تلفظ انگلیسی: روشن</button>
-      </div>
-    </div>
+<div id="game">
+  <h2 id="word"></h2>
+  <p id="meaning"></p>
+  
+  <!-- نمایش تصویر -->
+  <div id="imageWrap">
+    <img id="image" src="" alt="word image">
   </div>
-</section>
-
-<section class="game" id="game">
-  <div class="top">
-    <div class="logo">Vocabulary • Image • Pronunciation</div>
-    <div class="actions">
-      <button class="btn" id="backBtn">بازگشت</button>
-      <button class="btn" id="restartBtn">شروع مجدد</button>
-    </div>
-  </div>
-
-  <div class="card question">
-    <div class="q-left">
-      <h2 class="q-word" id="word">angry</h2>
-      <p class="q-meaning" id="meaning">عصبانی</p>
-      <div class="image-wrap" id="imageWrap">
-        <img id="image" alt="word image" src="">
-      </div>
-      <div class="feedback">
-        <span class="tag" id="statusTag">-</span>
-        <button class="btn" id="speakBtn">تلفظ واژه</button>
-      </div>
-    </div>
-    <div class="q-right">
-      <div class="answers" id="answers"></div>
-    </div>
-  </div>
-
-  <canvas class="confetti" id="confetti"></canvas>
-</section>
-
-<div class="modal" id="helpModal" aria-hidden="true">
-  <div class="box">
-    <span class="close-x" id="closeHelp">بستن ✕</span>
-    <h3>راهنما</h3>
-    <p>تصاویر واژگان مستقیماً از اینترنت بارگذاری می‌شوند؛ نیازی به پوشه‌ی images نیست.</p>
-    <p>برای هر واژه، لینک در imageMap تنظیم شده است. اگر لینک نامعتبر باشد، تصویر جایگزین نشان داده می‌شود.</p>
-    <hr/>
-    <h3>Help (English)</h3>
-    <p>Word images are loaded via direct web URLs. No local uploads required. You can replace links in imageMap.</p>
-  </div>
+  
+  <div id="answers"></div>
+  <p id="feedback"></p>
 </div>
 
 <script>
-/* ----------- Data: Personality with external image links ----------- */
-/* نکته: لینک‌ها باید مستقیم به فایل تصویر باشند (png/jpg). */
-const personality = [
+// لیست کلمات Personality
+const words = [
   {en:"angry", fa:"عصبانی"},
   {en:"brave", fa:"شجاع"},
   {en:"careless", fa:"بی‌دقت"},
   {en:"cruel", fa:"بی‌رحم"},
   {en:"funny", fa:"بامزه"},
   {en:"neat", fa:"مرتب"},
-  {en:"nervous", fa:"عصبی/دل‌نگران"},
+  {en:"nervous", fa:"دل‌نگران"},
   {en:"quiet", fa:"ساکت"},
   {en:"rude", fa:"بی‌ادب"},
   {en:"selfish", fa:"خودخواه"},
@@ -241,7 +56,7 @@ const personality = [
   {en:"calm", fa:"آرام"}
 ];
 
-/* نمونه لینک‌های مستقیم (می‌توانی بعداً دقیق‌تر جایگزین کنی) */
+// لینک تصاویر اینترنتی
 const imageMap = {
   angry: "https://png.pngtree.com/png-vector/20231128/ourmid/pngtree-angry-cartoon-character-isolated-on-white-background-png-image_10596272.png",
   brave: "https://png.pngtree.com/png-clipart/20230513/ourmid/pngtree-cute-brave-knight-boy-cartoon-vector-png-image_7079688.png",
@@ -265,170 +80,57 @@ const imageMap = {
   calm: "https://png.pngtree.com/png-clipart/20231114/ourmid/pngtree-calm-meditation-boy-cartoon-png-image_10533322.png"
 };
 
-/* ----------- Game state ----------- */
-let topic = null;
-let words = [];
 let currentIndex = 0;
-let showImages = true;
-let voiceOn = true;
 
-/* ----------- Elements ----------- */
-const startEl = document.getElementById('start');
-const gameEl = document.getElementById('game');
-const answersEl = document.getElementById('answers');
-const wordEl = document.getElementById('word');
-const meaningEl = document.getElementById('meaning');
-const imageEl = document.getElementById('image');
-const imageWrapEl = document.getElementById('imageWrap');
-const statusTag = document.getElementById('statusTag');
-const musicBtn = document.getElementById('musicBtn');
-const helpBtn = document.getElementById('helpBtn');
-const helpModal = document.getElementById('helpModal');
-const closeHelp = document.getElementById('closeHelp');
-const showImagesToggle = document.getElementById('showImagesToggle');
-const voiceToggle = document.getElementById('voiceToggle');
-const speakBtn = document.getElementById('speakBtn');
-const backBtn = document.getElementById('backBtn');
-const restartBtn = document.getElementById('restartBtn');
-
-/* ----------- Utils ----------- */
-const placeholderImg = "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
-function shuffle(arr){return arr.sort(()=>Math.random()-.5)}
-function speak(text){try{const u=new SpeechSynthesisUtterance(text);u.lang="en-US";speechSynthesis.speak(u);}catch{}}
-function speakFA(text){try{const u=new SpeechSynthesisUtterance(text);u.lang="fa-IR";speechSynthesis.speak(u);}catch{}}
-
-/* ----------- Music (royalty-free) ----------- */
-const music = new Audio("https://cdn.pixabay.com/download/audio/2021/10/15/audio_6e1f4c3f86.mp3?filename=calm-meditation-112191.mp3");
-music.loop = true;
-
-/* ----------- Confetti ----------- */
-const confettiCanvas = document.getElementById('confetti');
-const ctx = confettiCanvas.getContext('2d');
-let confettiArr=[];
-function resize(){confettiCanvas.width=window.innerWidth;confettiCanvas.height=window.innerHeight}
-window.addEventListener('resize',resize);resize();
-function fireConfetti(){
-  confettiArr = Array.from({length:120}, ()=>({
-    x: Math.random()*confettiCanvas.width,
-    y: -10,
-    r: 3+Math.random()*4,
-    c: `hsl(${Math.floor(Math.random()*360)},90%,60%)`,
-    s: 1+Math.random()*3
-  }));
-}
-function drawConfetti(){
-  ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-  confettiArr.forEach(p=>{
-    ctx.fillStyle=p.c;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
-    p.y+=p.s; if(p.y>confettiCanvas.height+20) p.y=-10;
-  });
-  requestAnimationFrame(drawConfetti);
-}
-drawConfetti();
-
-/* ----------- Render ----------- */
-function loadImageFor(word){
-  const url = imageMap[word.en.toLowerCase()];
-  imageEl.src = (showImages && url) ? url : placeholderImg;
-  imageWrapEl.style.display = showImages ? 'flex' : 'none';
-  imageEl.onerror = ()=>{imageEl.src = placeholderImg;}
-}
-
-function renderQuestion(){
+// نمایش سوال
+function showQuestion(){
   const item = words[currentIndex];
-  wordEl.textContent = item.en;
-  meaningEl.textContent = item.fa;
-  statusTag.textContent = "یک گزینه را انتخاب کن";
-  statusTag.className = "tag";
-  imageWrapEl.classList.remove('correct');
-  loadImageFor(item);
-
-  // build answers (2-column)
-  const pool = shuffle(words.slice());
-  const correct = item.en;
-  const choices = new Set([correct]);
-  for(let i=0; choices.size<4 && i<pool.length; i++){
-    choices.add(pool[i].en);
+  document.getElementById("word").textContent = item.en;
+  document.getElementById("meaning").textContent = item.fa;
+  
+  // تصویر
+  const img = document.getElementById("image");
+  img.src = imageMap[item.en] || "https://upload.wikimedia.org/wikipedia/commons/6/65/No-Image-Placeholder.svg";
+  
+  // تلفظ انگلیسی همزمان
+  const utter = new SpeechSynthesisUtterance(item.en);
+  utter.lang = "en-US";
+  speechSynthesis.speak(utter);
+  
+  // گزینه‌ها
+  const answersDiv = document.getElementById("answers");
+  answersDiv.innerHTML = "";
+  const choices = [item.en];
+  while(choices.length < 4){
+    const rand = words[Math.floor(Math.random()*words.length)].en;
+    if(!choices.includes(rand)) choices.push(rand);
   }
-  const final = shuffle([...choices]);
-  answersEl.innerHTML = "";
-  final.forEach(choice=>{
-    const b = document.createElement('button');
-    b.className = "btn";
-    b.textContent = choice;
-    b.onclick = ()=>checkAnswer(choice, correct);
-    answersEl.appendChild(b);
+  choices.sort(()=>Math.random()-0.5);
+  choices.forEach(choice=>{
+    const btn = document.createElement("button");
+    btn.textContent = choice;
+    btn.onclick = ()=>checkAnswer(choice, item.en);
+    answersDiv.appendChild(btn);
   });
 }
 
 function checkAnswer(choice, correct){
+  const feedback = document.getElementById("feedback");
   if(choice===correct){
-    statusTag.textContent = "آفرین! پاسخ درست ✅";
-    statusTag.className = "tag good";
-    imageWrapEl.classList.add('correct');
-    fireConfetti();
-    if(voiceOn){ speak(correct); }
-    // تلفظ فارسی روی نمایش پاسخ
-    speakFA("آفرین! درست گفتی");
-    setTimeout(()=>next(), 1200);
+    feedback.textContent = "آفرین! درست گفتی ✅";
+    // تلفظ فارسی
+    const utter = new SpeechSynthesisUtterance("آفرین! درست گفتی");
+    utter.lang = "fa-IR";
+    speechSynthesis.speak(utter);
+    setTimeout(()=>{currentIndex=(currentIndex+1)%words.length;showQuestion();},1500);
   } else {
-    statusTag.textContent = "نه، دوباره امتحان کن ❌";
-    statusTag.className = "tag bad";
+    feedback.textContent = "اشتباه است ❌ دوباره امتحان کن";
   }
 }
 
-function next(){
-  currentIndex = (currentIndex+1) % words.length;
-  renderQuestion();
-}
-
-/* ----------- Events ----------- */
-document.querySelectorAll("[data-topic]").forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    topic = btn.dataset.topic;
-    if(topic==="personality"){
-      words = shuffle(personality.slice());
-    }
-    startEl.style.display="none";
-    gameEl.style.display="block";
-    currentIndex = 0;
-    renderQuestion();
-  });
-});
-
-musicBtn.addEventListener('click',()=>{
-  if(music.paused){ music.play(); musicBtn.textContent="توقف موسیقی"; musicBtn.classList.add('icon','active'); }
-  else { music.pause(); musicBtn.textContent="پخش موسیقی"; musicBtn.classList.remove('active'); }
-});
-
-helpBtn.addEventListener('click',()=>{helpModal.style.display="flex"; helpModal.setAttribute('aria-hidden','false')});
-closeHelp.addEventListener('click',()=>{helpModal.style.display="none"; helpModal.setAttribute('aria-hidden','true')});
-
-showImagesToggle.addEventListener('click',()=>{
-  showImages = !showImages;
-  showImagesToggle.textContent = `نمایش تصویر: ${showImages ? "روشن" : "خاموش"}`;
-  loadImageFor(words[currentIndex]);
-});
-
-voiceToggle.addEventListener('click',()=>{
-  voiceOn = !voiceOn;
-  voiceToggle.textContent = `تلفظ انگلیسی: ${voiceOn ? "روشن" : "خاموش"}`;
-});
-
-speakBtn.addEventListener('click',()=>{
-  const w = words[currentIndex]?.en;
-  if(w && voiceOn) speak(w);
-});
-
-backBtn.addEventListener('click',()=>{
-  gameEl.style.display="none";
-  startEl.style.display="flex";
-});
-restartBtn.addEventListener('click',()=>{
-  currentIndex = 0;
-  words = shuffle(words);
-  renderQuestion();
-});
+// شروع بازی
+showQuestion();
 </script>
+
 </body>
 </html>
