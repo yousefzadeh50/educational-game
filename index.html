@@ -3,90 +3,452 @@
 <head>
 <meta charset="UTF-8">
 <title>English for Schools - Prospect 3</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <style>
-  body { font-family: Tahoma, sans-serif; margin:0; background:#f0f4ff; }
-  header {
-    text-align:center; padding:20px;
-    background:linear-gradient(135deg,#6c5ce7,#00d2ff);
-    color:white; font-size:32px; font-weight:bold;
-    text-shadow:0 0 15px rgba(0,0,0,.5);
+  :root{
+    --bg:#0b1023;
+    --card:#141a35;
+    --text:#eef2ff;
+    --muted:#b7c0e6;
+    --accent:#6c5ce7;
+    --accent2:#00d2ff;
+    --accent3:#ff8c42;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+    --glow:0 0 18px rgba(108,92,231,.6), 0 0 28px rgba(0,210,255,.35);
   }
-  header h2 { margin:5px 0; font-size:24px; }
-  .toolbar { display:flex; justify-content:space-between; padding:10px; background:#222; color:white; }
-  .toolbar button { background:#444; color:white; border:none; padding:8px 12px; border-radius:8px; cursor:pointer; }
-  .card { margin:20px auto; max-width:700px; padding:20px; background:white; border-radius:20px; box-shadow:0 0 25px rgba(0,0,0,.25); text-align:center; }
-  .phrase { font-size:28px; font-weight:bold; color:#2c3e50; margin-bottom:10px; }
-  .meaning { font-size:22px; color:#e74c3c; margin:10px 0; }
-  .examples { margin-top:15px; text-align:left; }
-  .examples p { font-size:18px; margin:10px 0; background:#f9f9f9; padding:8px; border-radius:8px; }
-  .examples span { display:block; font-size:16px; color:#555; margin-top:4px; }
-  .designer { margin-top:30px; padding:15px; background:#eee; border-radius:16px; display:flex; align-items:center; justify-content:center; gap:15px; }
-  .designer img { width:90px; height:90px; border-radius:50%; box-shadow:0 0 12px #6c5ce7; }
-  .designer div { text-align:left; }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:radial-gradient(1100px circle at 10% -10%,#13204d 0%,#0b1023 55%,#070b18 100%);
+    color:var(--text);font-family:IRANSans,system-ui,-apple-system,"Segoe UI",Roboto,"SF Pro Text",Tahoma;
+  }
+  /* Header */
+  header{
+    position:relative;text-align:center;padding:28px 16px 20px;
+  }
+  .brand{
+    font-weight:900;font-size:28px;letter-spacing:.5px;
+    background:linear-gradient(135deg,#fff,#cfe0ff);-webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 0 20px rgba(255,255,255,.12);
+  }
+  .series{
+    margin-top:8px;font-size:18px;font-weight:700;
+    background:linear-gradient(135deg,#6c5ce7,#00d2ff);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 10px rgba(108,92,231,.4));
+  }
+  .sparkle{
+    position:absolute;inset:0;pointer-events:none;background:
+      radial-gradient(8px 8px at 12% 40%, rgba(255,255,255,.25), transparent 60%),
+      radial-gradient(6px 6px at 88% 20%, rgba(255,255,255,.25), transparent 60%),
+      radial-gradient(7px 7px at 18% 78%, rgba(255,255,255,.2), transparent 60%);
+    opacity:.6;
+  }
+
+  /* Toolbar */
+  .toolbar{
+    display:flex;justify-content:space-between;align-items:center;padding:10px 16px;margin:0 auto;max-width:1080px;
+  }
+  .btn{
+    padding:10px 14px;border:none;border-radius:14px;background:#1b234d;color:var(--text);cursor:pointer;font-weight:700;
+    border:1px solid rgba(255,255,255,.08);transition:.2s transform,.2s box-shadow;
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+  .btn.icon{display:flex;align-items:center;gap:8px}
+  .btn.accent{background:linear-gradient(135deg,#6c5ce7,#00d2ff)}
+  .btn.ghost{background:transparent;border:1px dashed rgba(255,255,255,.22)}
+  .vol-label{font-size:12px;color:var(--muted);margin-left:8px}
+
+  /* Start */
+  .start{
+    max-width:1080px;margin:0 auto;padding:12px 16px 22px
+  }
+  .intro-card{
+    background:linear-gradient(180deg,rgba(20,26,53,.85),rgba(9,14,32,.85));border:1px solid rgba(255,255,255,.08);
+    border-radius:22px;padding:18px;box-shadow:var(--glow)
+  }
+  .intro-title{font-size:18px;margin:0 0 10px}
+  .topics{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:10px
+  }
+  .topic{
+    background:linear-gradient(135deg,#1b2146,#111634);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:14px;
+    cursor:pointer;transition:.2s transform,.2s box-shadow;display:flex;align-items:center;gap:10px
+  }
+  .topic:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+  .badge{padding:6px 10px;border-radius:999px;background:#0e1330;color:var(--muted);font-size:12px;border:1px solid rgba(255,255,255,.08)}
+
+  /* Lesson view */
+  .lesson{
+    display:none;max-width:1080px;margin:0 auto;padding:8px 16px 80px
+  }
+  .grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-top:12px}
+  .card{
+    background:linear-gradient(180deg,rgba(27,33,74,.92),rgba(16,22,49,.92));
+    border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden
+  }
+  .card::after{
+    content:"";position:absolute;inset:auto auto -40% -40%;width:180px;height:180px;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(255,255,255,.16), transparent 70%);
+    transform:rotate(25deg);
+  }
+  .phrase{
+    font-size:22px;font-weight:800;margin:0;color:#fff;text-shadow:0 4px 14px rgba(0,0,0,.35)
+  }
+  .meaning{
+    margin:6px 0 10px;color:#ffe082;font-weight:700
+  }
+  .speak-btn{
+    padding:6px 10px;border:none;border-radius:10px;background:#222a58;color:#fff;cursor:pointer;margin-top:8px;
+    border:1px solid rgba(255,255,255,.1)
+  }
+  .examples{margin-top:10px}
+  .ex{
+    background:#0f1537;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:10px;margin:8px 0
+  }
+  .ex-en{font-size:15px;font-weight:700;color:#cfe0ff}
+  .ex-fa{font-size:14px;color:#b9c3e2;margin-top:6px}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px}
+
+  /* Designer card */
+  .designer{
+    position:fixed;left:16px;right:16px;bottom:16px;margin:0 auto;max-width:1080px;
+    background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(0,210,255,.12));
+    border:1px solid rgba(255,255,255,.15);border-radius:18px;padding:10px 12px;backdrop-filter:blur(8px);box-shadow:var(--glow);
+    display:flex;align-items:center;gap:12px
+  }
+  .avatar{
+    width:60px;height:60px;border-radius:14px;background:linear-gradient(135deg,#6c5ce7,#00d2ff);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;box-shadow:var(--glow)
+  }
+  .d-info{line-height:1.35}
+  .d-name{font-weight:800}
+  .d-role{color:var(--muted);font-size:13px}
+
+  /* Modal help */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px}
+  .modal .box{width:min(780px,96vw);background:#141a35;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:16px}
+  .modal h3{margin:0 0 6px}
+  .modal p{color:var(--muted)}
+
+  /* Back button */
+  .nav{
+    max-width:1080px;margin:0 auto;padding:0 16px 8px;display:none
+  }
+  .nav .btn{background:#1b2148}
 </style>
 </head>
 <body>
 
 <header>
-  English for Schools <br>
-  <h2>Prospect 3</h2>
+  <div class="brand">English for Schools</div>
+  <div class="series">Prospect 3</div>
+  <div class="sparkle"></div>
 </header>
 
 <div class="toolbar">
-  <button onclick="toggleMusic()">🎵 موسیقی زمینه</button>
-  <button onclick="showHelp()">❓ راهنما</button>
+  <button class="btn icon" id="musicBtn">🎵 موسیقی زمینه <span class="vol-label">(صدای کم)</span></button>
+  <button class="btn ghost icon" id="helpBtn">❓ راهنما</button>
 </div>
 
-<div class="card">
-  <div class="phrase" id="phrase">buy a ticket</div>
-  <div class="meaning">خریدن بلیط</div>
-  
-  <div class="examples">
-    <p>
-      1. I want to buy a ticket for the train. 
-      <button onclick="speak('I want to buy a ticket for the train')">🔊</button>
-      <span>می‌خواهم یک بلیط برای قطار بخرم.</span>
-    </p>
-    <p>
-      2. She bought a ticket to Tehran. 
-      <button onclick="speak('She bought a ticket to Tehran')">🔊</button>
-      <span>او یک بلیط به تهران خرید.</span>
-    </p>
-    <p>
-      3. We need to buy tickets for the concert. 
-      <button onclick="speak('We need to buy tickets for the concert')">🔊</button>
-      <span>ما باید برای کنسرت بلیط بخریم.</span>
-    </p>
+<section class="start" id="start">
+  <div class="intro-card">
+    <h3 class="intro-title">لیست موضوعات درس‌ها</h3>
+    <div class="topics" id="topics"></div>
+    <div class="row" style="margin-top:10px">
+      <span class="badge">برای شروع، یک درس را انتخاب کن</span>
+    </div>
+  </div>
+</section>
+
+<div class="nav" id="nav">
+  <button class="btn" id="backBtn">↩︎ بازگشت به لیست درس‌ها</button>
+</div>
+
+<section class="lesson" id="lesson">
+  <div class="grid-cards" id="cards"></div>
+</section>
+
+<!-- Designer card -->
+<div class="designer">
+  <div class="avatar">AR</div>
+  <div class="d-info">
+    <div class="d-name">طراح: عبدالرّسول</div>
+    <div class="d-role">کارت‌های زیبا، تلفظ همزمان، مثال‌های ساده و جذاب، موسیقی و راهنمای دو‌زبانه</div>
   </div>
 </div>
 
-<div class="designer">
-  <img src="designer-photo.jpg" alt="Designer">
-  <div>
-    <strong>طراح: عبدالرّسول</strong><br>
-    <span>UI زیبا، فیدبک جذاب، موسیقی و تصاویر کارتونی</span>
+<!-- Help Modal -->
+<div class="modal" id="helpModal">
+  <div class="box">
+    <h3>راهنما</h3>
+    <p>یک درس را انتخاب کن. هر عبارت در یک کادر زیبا با تلفظ انگلیسی و سه مثال ساده نمایش داده می‌شود. روی آیکون بلندگو کنار هر جمله کلیک کن تا تلفظ شود.</p>
+    <hr>
+    <h3>Help (English)</h3>
+    <p>Select a lesson. Each phrase card shows the phrase, automatic pronunciation, three simple example sentences with Persian translations, and a speaker to play each sentence.</p>
+    <div style="margin-top:10px;text-align:left">
+      <button class="btn" id="closeHelp">بستن ✕</button>
+    </div>
   </div>
 </div>
 
 <script>
-function speak(text){
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = "en-US";
-  speechSynthesis.speak(utter);
-}
-function toggleMusic(){
-  alert("موسیقی زمینه با صدای پایین پخش/توقف می‌شود (اینجا می‌توانی فایل صوتی اضافه کنی).");
-}
-function showHelp(){
-  alert("راهنما: هر عبارت با تلفظ و مثال‌های ساده نمایش داده می‌شود. روی 🔊 کلیک کن تا جمله تلفظ شود.");
-}
-// تلفظ همزمان عبارت اصلی
-window.onload = ()=>{
-  const utter = new SpeechSynthesisUtterance(document.getElementById("phrase").textContent);
-  utter.lang = "en-US";
-  speechSynthesis.speak(utter);
-};
-</script>
+/* -------- Data from PDF (cleaned) -------- */
+const lessons = [
+  {
+    id:"personality",
+    title:"Lesson 1: Personality",
+    phrases:[
+      {en:"an angry kid", fa:"یک بچه عصبانی"},
+      {en:"a brave soldier", fa:"یک سرباز شجاع"},
+      {en:"a careless man", fa:"یک مرد بی‌دقت"},
+      {en:"a cruel boy", fa:"یک پسر بی‌رحم"},
+      {en:"a funny story", fa:"یک داستان بامزه"},
+      {en:"a neat person", fa:"یک فرد مرتب"},
+      {en:"a nervous boy", fa:"یک پسر دل‌نگران"},
+      {en:"a quiet place", fa:"یک مکان آرام"},
+      {en:"a rude kid", fa:"یک بچه بی‌ادب"},
+      {en:"a selfish person", fa:"یک فرد خودخواه"},
+      {en:"a lazy person", fa:"یک فرد تنبل"},
+      {en:"a shy girl", fa:"یک دختر خجالتی"},
+      {en:"a generous girl", fa:"یک دختر سخاوتمند"},
+    ]
+  },
+  {
+    id:"travel",
+    title:"Lesson 2: Travel",
+    phrases:[
+      {en:"buy a ticket", fa:"بلیط خریدن"},
+      {en:"check the passport", fa:"گذرنامه را بررسی کردن"},
+      {en:"check in", fa:"تسویه ورود (چک‌این)"},
+      {en:"check the timetable", fa:"جدول زمان‌بندی را بررسی کردن"},
+      {en:"exchange money", fa:"پول را تبدیل کردن"},
+      {en:"fill out a form", fa:"فرم را پر کردن"},
+      {en:"book a hotel", fa:"هتل رزرو کردن"},
+      {en:"pack for a trip", fa:"برای سفر بسته‌بندی کردن"},
+      {en:"talk to a receptionist", fa:"با پذیرش صحبت کردن"},
+      {en:"weigh the baggage", fa:"چمدان را وزن کردن"},
+      {en:"baggage reclaim", fa:"تحویل گرفتن بار"},
+      {en:"board the plane", fa:"سوار هواپیما شدن"},
+      {en:"make a voyage", fa:"سفر دریایی انجام دادن"},
+      {en:"take an express train", fa:"با قطار سریع‌السیر رفتن"},
+      {en:"pay toll", fa:"عوارض پرداخت کردن"},
+    ]
+  },
+  {
+    id:"festivals",
+    title:"Lesson 3: Festivals & Ceremonies",
+    phrases:[
+      {en:"make lunch/dinner", fa:"ناهار/شام درست کردن"},
+      {en:"bake a cake", fa:"کیک پختن"},
+      {en:"set the table", fa:"میز را چیدن"},
+      {en:"sing the national anthem", fa:"سرود ملی را خواندن"},
+      {en:"hold a ceremony", fa:"مراسم برگزار کردن"},
+      {en:"clear the table", fa:"جمع کردن میز"},
+      {en:"watch fireworks", fa:"آتش‌بازی تماشا کردن"},
+      {en:"read poems of Hafez", fa:"خواندن اشعار حافظ"},
+      {en:"wear special clothes", fa:"لباس‌های خاص پوشیدن"},
+      {en:"go out on Nature Day", fa:"روز طبیعت بیرون رفتن"},
+      {en:"celebrate a religious holiday", fa:"تعطیلات مذهبی را جشن گرفتن"},
+      {en:"watch military parade", fa:"رژه نظامی تماشا کردن"},
+      {en:"commemorate martyrs", fa:"یاد شهدا را گرامی داشتن"},
+      {en:"Islamic-Iranian culture", fa:"فرهنگ اسلامی-ایرانی"},
+      {en:"Islamic revolution anniversary", fa:"سالگرد انقلاب اسلامی"},
+    ]
+  },
+  {
+    id:"services",
+    title:"Lesson 4: Services",
+    phrases:[
+      {en:"get on a bus", fa:"سوار اتوبوس شدن"},
+      {en:"get off a bus", fa:"از اتوبوس پیاده شدن"},
+      {en:"take out money from an ATM", fa:"برداشت پول از خودپرداز"},
+      {en:"send an e-mail", fa:"ایمیل ارسال کردن"},
+      {en:"hire a taxi", fa:"تاکسی کرایه کردن"},
+      {en:"open an account", fa:"حساب باز کردن"},
+      {en:"put out fire", fa:"آتش را خاموش کردن"},
+      {en:"recharge your E-ticket", fa:"شارژ کردن بلیط الکترونیک"},
+      {en:"call the emergency (115)", fa:"تماس با اورژانس (۱۱۵)"},
+      {en:"ask the information desk", fa:"از میز اطلاعات پرسیدن"},
+      {en:"donate blood", fa:"اهدای خون"},
+      {en:"do voluntary work", fa:"کار داوطلبانه انجام دادن"},
+      {en:"help charity", fa:"کمک به خیریه"},
+      {en:"bring to the ER", fa:"به اورژانس آوردن"},
+      {en:"keep the city clean", fa:"شهر را تمیز نگه داشتن"},
+    ]
+  },
+  {
+    id:"media",
+    title:"Lesson 5: Media",
+    phrases:[
+      {en:"interview somebody", fa:"مصاحبه کردن با کسی"},
+      {en:"text a message", fa:"پیامک فرستادن"},
+      {en:"receive an e-mail", fa:"ایمیل دریافت کردن"},
+      {en:"update a blog", fa:"بلاگ را به‌روزرسانی کردن"},
+      {en:"participate in an online course", fa:"شرکت در دوره آنلاین"},
+      {en:"connect to the Internet", fa:"اتصال به اینترنت"},
+      {en:"download something from the internet", fa:"دانلود چیزی از اینترنت"},
+      {en:"attend a TV program", fa:"شرکت در برنامه تلویزیونی"},
+      {en:"install a computer dictionary", fa:"نصب فرهنگ لغت کامپیوتری"},
+      {en:"look at the newsstand", fa:"دیدن دکه روزنامه"},
+      {en:"watch a quiz show", fa:"تماشای مسابقه تلویزیونی"},
+      {en:"see a war movie", fa:"تماشای فیلم جنگی"},
+      {en:"change the TV channels", fa:"عوض کردن کانال‌های تلویزیون"},
+      {en:"install an antivirus program", fa:"نصب برنامه ضدویروس"},
+    ]
+  },
+  {
+    id:"health",
+    title:"Lesson 6: Health and Injuries",
+    phrases:[
+      {en:"She burned her hand.", fa:"او دستش را سوزاند."},
+      {en:"He hit his head on the door.", fa:"او سرش را به در زد."},
+      {en:"He broke his leg.", fa:"او پایش را شکست."},
+      {en:"It is bleeding.", fa:"خون‌ریزی دارد."},
+      {en:"It hurts a lot.", fa:"خیلی درد می‌کند."},
+      {en:"Stick a plaster on the wound.", fa:"روی زخم چسب زخمی بزن."},
+      {en:"I hurt my knee.", fa:"زانویم آسیب دید."},
+      {en:"She cut her finger.", fa:"او انگشتش را برید."},
+      {en:"She takes care of her child.", fa:"او از فرزندش مراقبت می‌کند."},
+      {en:"He has some bruises.", fa:"او چند کبودی دارد."},
+      {en:"He has a black eye.", fa:"او چشمش کبود شده است."},
+      {en:"He had a car crash.", fa:"او تصادف کرد."},
+      {en:"He has a scar.", fa:"او جای زخم دارد."},
+      {en:"She had a heart attack.", fa:"او سکته قلبی کرد."},
+      {en:"He has his leg in a cast.", fa:"پایش در گچ است."},
+    ]
+  }
+];
 
+/* -------- Example generator (3 simple sentences per phrase) -------- */
+function makeExamples(phrase){
+  // Basic templates adapted to the phrase; lightweight grammar handling
+  const p = phrase.en;
+  const base = p.replace(/\.$/,'');
+  const nouns = ["We","I","They","He","She"];
+  const places = ["at school","at home","at the airport","in the city","on the weekend"];
+  const times = ["today","every day","yesterday","this morning","tonight"];
+
+  const ex1 = `${nouns[0]} ${base} ${places[2]}.`;
+  const ex2 = `${nouns[1]} ${base} ${times[0]}.`;
+  const ex3 = `${nouns[2]} ${base} ${places[3]} ${times[4]}.`;
+
+  // Simple Persian translations (illustrative)
+  const fa1 = `ما ${phrase.fa} ${places[2].replace('the ','')} انجام دادیم/دیدیم.`;
+  const fa2 = `من امروز ${phrase.fa} انجام دادم/دیدم.`;
+  const fa3 = `آن‌ها امشب در شهر ${phrase.fa} انجام دادند/دیدند.`;
+
+  return [
+    {en:ex1, fa:fa1},
+    {en:ex2, fa:fa2},
+    {en:ex3, fa:fa3}
+  ];
+}
+
+/* -------- UI rendering -------- */
+const topicsEl = document.getElementById('topics');
+const startEl = document.getElementById('start');
+const lessonEl = document.getElementById('lesson');
+const cardsEl = document.getElementById('cards');
+const navEl = document.getElementById('nav');
+const backBtn = document.getElementById('backBtn');
+
+function renderTopics(){
+  topicsEl.innerHTML = "";
+  lessons.forEach(ls=>{
+    const div = document.createElement('div');
+    div.className = "topic";
+    div.innerHTML = `
+      <div style="flex:1">
+        <div style="font-weight:800">${ls.title}</div>
+        <div class="badge">${ls.phrases.length} عبارت</div>
+      </div>
+      <button class="btn accent">شروع</button>
+    `;
+    div.onclick = ()=>openLesson(ls.id);
+    topicsEl.appendChild(div);
+  });
+}
+
+function speak(text, lang="en-US"){
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang; speechSynthesis.speak(u);
+  }catch{}
+}
+
+function openLesson(id){
+  const ls = lessons.find(l=>l.id===id);
+  if(!ls) return;
+  startEl.style.display="none";
+  navEl.style.display="block";
+  lessonEl.style.display="block";
+  cardsEl.innerHTML = "";
+
+  ls.phrases.forEach(ph=>{
+    const examples = makeExamples(ph);
+    const card = document.createElement('div');
+    card.className = "card";
+    card.innerHTML = `
+      <div class="row" style="justify-content:flex-start;gap:10px">
+        <h3 class="phrase">${ph.en}</h3>
+        <button class="speak-btn">🔊 تلفظ عبارت</button>
+      </div>
+      <div class="meaning">${ph.fa}</div>
+
+      <div class="examples">
+        ${examples.map((ex,i)=>`
+          <div class="ex">
+            <div class="row">
+              <div class="ex-en">${i+1}. ${ex.en}</div>
+              <button class="speak-btn">🔊</button>
+            </div>
+            <div class="ex-fa">${ex.fa}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    cardsEl.appendChild(card);
+
+    // Speak phrase on load of card (gentle delay)
+    setTimeout(()=>speak(ph.en), 150);
+
+    // Bind phrase speak button
+    const phraseBtn = card.querySelectorAll(".speak-btn")[0];
+    phraseBtn.onclick = ()=>speak(ph.en);
+
+    // Bind example speak buttons
+    const exButtons = card.querySelectorAll(".ex .speak-btn");
+    exButtons.forEach((btn, idx)=>{
+      btn.onclick = ()=>speak(examples[idx].en);
+    });
+  });
+}
+
+backBtn.onclick = ()=>{
+  lessonEl.style.display="none";
+  navEl.style.display="none";
+  startEl.style.display="block";
+  cardsEl.innerHTML = "";
+};
+
+/* -------- Music & Help -------- */
+const musicBtn = document.getElementById('musicBtn');
+const helpBtn = document.getElementById('helpBtn');
+const helpModal = document.getElementById('helpModal');
+const closeHelp = document.getElementById('closeHelp');
+
+const music = new Audio("https://cdn.pixabay.com/download/audio/2022/03/30/audio_c2e7205c4b.mp3?filename=soft-piano-ambient-140300.mp3");
+music.loop = true; music.volume = 0.15;
+
+musicBtn.onclick = ()=>{
+  if(music.paused){ music.play(); musicBtn.textContent = "⏸️ توقف موسیقی"; }
+  else { music.pause(); musicBtn.textContent = "🎵 موسیقی زمینه (صدای کم)"; }
+};
+
+helpBtn.onclick = ()=>{ helpModal.style.display="flex"; };
+closeHelp.onclick = ()=>{ helpModal.style.display="none"; };
+
+/* -------- Init -------- */
+renderTopics();
+</script>
 </body>
 </html>
